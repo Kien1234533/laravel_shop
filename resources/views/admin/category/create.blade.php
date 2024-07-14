@@ -19,7 +19,6 @@
         <!-- Default box -->
         <div class="container-fluid">
             <form action="" method="post" id="categoryForm">
-
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -28,19 +27,21 @@
                                     <label for="name">Name</label>
                                     <input type="text" name="name" id="name" class="form-control"
                                         placeholder="Name">
+                                    <p></p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="slug">Slug</label>
-                                    <input type="text" name="slug" id="slug" class="form-control"
+                                    <input readonly type="text" name="slug" id="slug" class="form-control"
                                         placeholder="Slug">
+                                    <p></p>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="email">Status</label>
+                                    <label for="status">Status</label>
                                     <select type="text" name="status" id="status" class="form-control">
                                         <option value="1">Active</option>
                                         <option value="0">Block</option>
@@ -68,14 +69,60 @@
             e.preventDefault();
             var element = $(this);
             $.ajax({
-                url: '{{route('categories.store')}}',
+                url: '{{ route('categories.store') }}',
                 type: 'post',
                 data: element.serializeArray(),
                 dataType: 'json',
-                success: function () {
+                success: function(response) {
+                    if (response['status']) {
+                        $('#name').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html(
+                                errors['name']);
+                        $('#slug').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html(
+                                errors['slug']);
+                    }
 
-                }, error: function(jqXHR, exception) {
+                    var errors = response['errors'];
+                    if (errors['name']) {
+                        $('#name').addClass('is-invalid').siblings('p').addClass('invalid-feedback')
+                            .html(
+                                errors['name']);
+                    } else {
+                        $('#name').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                    }
+
+                    if (errors['slug']) {
+                        $('#slug').addClass('is-invalid').siblings('p').addClass('invalid-feedback')
+                            .html(
+                                errors['slug']);
+                    } else {
+                        $('#slug').removeClass('is-invalid').siblings('p').removeClass(
+                                'invalid-feedback')
+                            .html('');
+                    }
+                },
+                error: function(jqXHR, exception) {
                     console.log("something went wrong");
+                }
+            })
+        })
+
+        $('#name').change(function() {
+            element = $(this);
+            $.ajax({
+                url: '{{ route('getSlug') }}',
+                type: 'get',
+                data: {title: element.val()},
+                dataType: 'json',
+                success: function(response) {
+                    if(response['status'] == true) {
+                        $('#slug').val(response['slug']);
+                    }
                 }
             })
         })

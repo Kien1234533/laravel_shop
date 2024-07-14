@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session; // Đảm bảo thêm dòng này
 
 class CategoryController extends Controller
 {
@@ -13,6 +16,8 @@ class CategoryController extends Controller
     public function index()
     {
         //
+        $categories = Category::latest()->paginate(10);
+        return view('admin.category.index', compact('categories'));
     }
 
     /**
@@ -30,6 +35,28 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'slug' => 'required|unique:categories',
+        ]);
+
+        if($validator->passes()) {
+            $category = new Category();
+            $category->name = $request->name;
+            $category->slug = $request->slug;
+            $category->status = $request->status;
+            $category->save();
+            session()->flash('success','Category added successfully');
+            return response()->json([
+                'status' => true,
+                'message' => 'Category added successfully'
+            ]);
+        }else { 
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
     }
 
     /**
