@@ -13,10 +13,14 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $categories = Category::latest()->paginate(10);
+        $categories = Category::orderBy('id');
+        if (!empty($request->get('keyword'))) {
+            $categories = $categories->where('name', 'like', '%' . $request->get('keyword') . '%');
+        }
+        $categories = $categories->paginate(10);
         return view('admin.category.index', compact('categories'));
     }
 
@@ -35,23 +39,23 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'slug' => 'required|unique:categories',
         ]);
 
-        if($validator->passes()) {
+        if ($validator->passes()) {
             $category = new Category();
             $category->name = $request->name;
             $category->slug = $request->slug;
             $category->status = $request->status;
             $category->save();
-            session()->flash('success','Category added successfully');
+            session()->flash('success', 'Category added successfully');
             return response()->json([
                 'status' => true,
                 'message' => 'Category added successfully'
             ]);
-        }else { 
+        } else {
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()

@@ -50,38 +50,20 @@
                         @enderror
                     </div>
                     <div class="row">
-                        <!-- <div class="col-8">
-     <div class="icheck-primary">
-         <input type="checkbox" id="remember">
-         <label for="remember">
-      Remember Me
-         </label>
-     </div>
-       </div> -->
-                        <!-- /.col -->
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Login</button>
                         </div>
-                        <!-- /.col -->
                     </div>
                 </form>
                 <p class="mb-1 mt-3">
                     <a href="forgot-password.html">I forgot my password</a>
                 </p>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
-    <!-- ./wrapper -->
-    <!-- jQuery -->
     <script src="{{ asset('admin-assets/plugins/jquery/jquery.min.js') }}"></script>
-    <!-- Bootstrap 4 -->
     <script src="{{ asset('admin-assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- AdminLTE App -->
     <script src="{{ asset('admin-assets/js/adminlte.min.js') }}"></script>
-    <!-- AdminLTE for demo purposes -->
-    {{-- <script src="js/demo.js"></script> --}}
 </body>
 
 </html>
